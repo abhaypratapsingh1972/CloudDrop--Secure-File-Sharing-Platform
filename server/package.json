@@ -5,11 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-  "dev": "nodemon src/index.js",
-  "start": "node src/index.js"
-},
-  "author": "",
-  "license": "ISC",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
+  },
   "dependencies": {
     "archiver": "^7.0.1",
     "bcryptjs": "^3.0.2",
