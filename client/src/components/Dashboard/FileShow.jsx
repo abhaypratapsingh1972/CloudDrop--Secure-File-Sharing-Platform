@@ -24,12 +24,13 @@ const FileShow = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const itemsPerPage = 8;
+  const userId = user?._id || user?.id;
 
   useEffect(() => {
-    if (user && user._id) {
-      dispatch(getUserFiles(user._id));
+    if (userId) {
+      dispatch(getUserFiles(userId));
     }
-  }, [user, dispatch]);
+  }, [userId, dispatch]);
 
   const sortFileName = (filename = "") =>
     filename.length > 22 ? `${filename.slice(0, 22)}...` : filename;

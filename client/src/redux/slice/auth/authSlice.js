@@ -8,6 +8,16 @@ import {
   getUser,
 } from './authThunk';
 
+const normalizeUser = (user) => {
+  if (!user || typeof user !== 'object') return null;
+
+  return {
+    ...user,
+    id: user.id || user._id,
+    _id: user._id || user.id,
+  };
+};
+
 const stored = localStorage.getItem('user');
 
 let parsedUser = null;
@@ -15,7 +25,7 @@ let parsedUser = null;
 try {
   parsedUser =
     stored && stored !== 'undefined'
-      ? JSON.parse(stored)
+      ? normalizeUser(JSON.parse(stored))
       : null;
 } catch (error) {
   console.error('Invalid user data in localStorage:', error);
@@ -44,8 +54,8 @@ const authSlice = createSlice({
 
       try {
         if (stored && stored !== 'undefined') {
-          state.user = JSON.parse(stored);
-          state.isLoggedIn = true;
+          state.user = normalizeUser(JSON.parse(stored));
+          state.isLoggedIn = !!state.user;
         } else {
           state.user = null;
           state.isLoggedIn = false;
@@ -66,11 +76,9 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state) => {
         state.loading = false;
-        state.user = action.payload;
-        state.isLoggedIn = true;
-        localStorage.setItem('user', JSON.stringify(action.payload));
+        state.error = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -84,12 +92,13 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
-        state.isLoggedIn = true;
-        localStorage.setItem(
-          'user',
-          JSON.stringify(action.payload.user)
-        );
+        const user = normalizeUser(action.payload.user);
+        state.user = user;
+        state.isLoggedIn = !!user;
+
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -103,10 +112,10 @@ const authSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = normalizeUser(action.payload);
         localStorage.setItem(
           'user',
-          JSON.stringify(action.payload)
+          JSON.stringify(state.user)
         );
       })
       .addCase(updateUser.rejected, (state, action) => {
@@ -137,7 +146,7 @@ const authSlice = createSlice({
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = normalizeUser(action.payload);
       })
       .addCase(getUser.rejected, (state, action) => {
         state.loading = false;
