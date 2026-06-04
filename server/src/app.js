@@ -11,10 +11,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://cloud-drop-secure-file-sharing-platform-plbutlinb.vercel.app"
-    ],
+    origin: true,
     credentials: true,
   })
 );
