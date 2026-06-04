@@ -5,7 +5,7 @@ CloudDrop is a full-stack file sharing platform for uploading, previewing, and s
 Live deployment:
 
 ```txt
-https://cloud-drop-secure-file-sharing-platform-aegyo1z54.vercel.app
+https://cloud-drop-secure-file-sharing-platform-131bvdyo5.vercel.app/
 ```
 
 ## Features
